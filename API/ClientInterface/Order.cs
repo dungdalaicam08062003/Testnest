@@ -22,7 +22,7 @@ namespace API.ClientInterface
             _config.GetConnectionString("Default")
             ?? throw new InvalidOperationException("Missing ConnectionStrings:Default");
         [HttpPost]
-        public async Task<IActionResult> CreateNewOrder(CreateOrderRequest order, HttpRequest req)
+        public async Task<IActionResult> CreateNewOrder(CreateOrderRequest order)
         {
            
             var orderId = await DBOrder.addProductOrderByCart(
@@ -32,7 +32,7 @@ namespace API.ClientInterface
             return Ok(orderId);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateOrder(UpdateOrder order, HttpRequest req)
+        public async Task<IActionResult> UpdateOrder(UpdateOrder order)
         {
 
             var orderId = await DBOrder.updateInfomationOrder(
@@ -44,7 +44,7 @@ namespace API.ClientInterface
             return Ok(orderId);
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteOrder(UpdateOrder order, HttpRequest req)
+        public async Task<IActionResult> DeleteOrder(UpdateOrder order)
         {
 
             await DBOrder.deleteOrder(
