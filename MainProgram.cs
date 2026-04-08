@@ -1,4 +1,4 @@
-﻿using WebsiteComputer.Database;
+using WebsiteComputer.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -30,15 +30,22 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 var connStr = config.GetConnectionString("Supabase")
     ?? throw new InvalidOperationException("Missing ConnectionStrings:Supabase");
 
-//Read origin for CORs List
-var allowedOrigins = config.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+// //Read origin for CORs List
+// var allowedOrigins = config.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
 
-builder.Services.AddCors(opt =>
+// builder.Services.AddCors(opt =>
+// {
+//     opt.AddPolicy("CorsPolicy", p =>
+//         p.WithOrigins(allowedOrigins)
+//          .AllowAnyHeader()
+//          .AllowAnyMethod());
+// });
+builder.Services.AddCors(options =>
 {
-    opt.AddPolicy("CorsPolicy", p =>
-        p.WithOrigins(allowedOrigins)
-         .AllowAnyHeader()
-         .AllowAnyMethod());
+    options.AddPolicy("AllowAll",
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
 });
 
 // ✅ Controllers + Swagger
