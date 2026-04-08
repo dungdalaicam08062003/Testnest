@@ -4,7 +4,6 @@ WORKDIR /src
 
 COPY . .
 
-WORKDIR /src/WebsiteComputer
 RUN dotnet publish WebsiteComputer.csproj -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
