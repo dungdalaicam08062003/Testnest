@@ -1,4 +1,4 @@
-﻿using WebsiteComputer.Database;
+using WebsiteComputer.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
