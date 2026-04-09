@@ -26,7 +26,6 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 
 // ✅ DB connection (local + render)
 var connStr =
-    config.GetConnectionString("Supabase") ??
     Environment.GetEnvironmentVariable("DATABASE_CONNECTION") ??
     throw new InvalidOperationException("Missing database connection");
 
