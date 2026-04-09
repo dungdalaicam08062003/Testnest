@@ -15,14 +15,9 @@ namespace API.ClientInterface
     
     public class HomePage : ControllerBase
     {
-        private readonly IConfiguration _config;
-        public HomePage(IConfiguration config)
-        {
-            _config = config;
-        }
         private string connStr =>
-            _config.GetConnectionString("Supabase")
-            ?? throw new InvalidOperationException("Missing ConnectionStrings:Supabase");
+            Environment.GetEnvironmentVariable("DATABASE_CONNECTION") ??
+            throw new InvalidOperationException("Missing database connection");
 
         [HttpGet]
         public async Task<IActionResult> GetAllProduct()
