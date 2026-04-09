@@ -25,9 +25,8 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 });
 
 // ✅ DB connection (local + render)
-var connStr =
-    Environment.GetEnvironmentVariable("DATABASE_CONNECTION") ??
-    throw new InvalidOperationException("Missing database connection");
+var connStr = config.GetConnectionString("Supabase")
+    ?? throw new InvalidOperationException("Missing ConnectionStrings:Supabase");
 
 // ✅ CORS
 builder.Services.AddCors(options =>
