@@ -1,0 +1,230 @@
+﻿openapi: '3.0.3'
+info:
+  title: API Title
+  version: '1.0'
+  description: >
+    Minimal API contract for Homepage product listing and product detail.
+servers:
+  - url: http://localhost:5000/api
+    description: Local dev
+paths:
+ 
+  /api/admin/products:
+    get:
+      summary: Get Products
+      responses:
+        "200":
+          description: Product list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+              example:
+                - ProductID: "P005"
+                  ProductName: Dell G15 Gaming
+                  ProductImage: "https://cdn.tgdd.vn/Files/2021/09/17/1383447/dell-gaming-g15-phong-cach-thiet-ke-_1920x1080-800-resize.jpg"
+                  price: 1500
+                  descriptions: "Laptop chơi game hiệu năng cao, GPU RTX 4060, tản nhiệt kép."
+                  stock: 10
+ 
+    post:
+      summary: Create product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "201":
+          description: Product created
+ 
+  /api/admin/products/{id}:
+    put:
+      summary: Update product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: Product updated
+ 
+    delete:
+      summary: Delete product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product deleted
+ 
+  /api/orders:
+    get:
+      summary: Get orders
+      responses:
+        "200":
+          description: Order list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+              example: 
+                -
+  /api/orders/{id}/status:
+    put:
+      summary: Update order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderStatusUpdate"
+      responses:
+        "200":
+          description: Order status updated
+    delete:
+      summary: delete order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order deleted
+  /api/client:
+    get:
+      summary: Get Clients
+      responses:
+        "200":
+          description: Client list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+         
+    post:
+      summary: Create Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+      responses:
+        "201":
+          description: Client created
+ 
+  /api/client/{id}:
+    put:
+      summary: Update product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+      responses:
+        "200":
+          description: Client updated
+    delete:
+      summary: Delete Client
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Client deleted
+components:
+  schemas:
+ 
+    Product:
+      type: object
+      properties:
+        productID:
+          type: string
+        productName:
+          type: string
+        productImage:
+            type: string
+        price:
+          type: number
+        descriptions:
+            type: string
+        stock:
+          type: integer
+ 
+    Order:
+      type: object
+      properties:
+        clientID:
+          type: string
+        orderID:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
+        totalPrice:
+          type: number
+        status: 
+            type: string #preparing, delivering, delivered, returned
+        address:
+            type: string
+        phoneNumber:
+            type: string
+        
+    Client:
+      type: object
+      properties:
+        clientID:
+          type: string
+        clientName:
+          type: number
+        PhoneNumber: 
+          type: string
+        totalPrice:
+          type: number
+    OrderStatusUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          example: preparing # delivering, delivered, returned

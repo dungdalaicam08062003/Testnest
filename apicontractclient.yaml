@@ -1,0 +1,242 @@
+﻿openapi: '3.0.3'
+info:
+  title: API Title
+  version: '1.0'
+  description: >
+    Minimal API contract for Homepage product listing and product detail.
+servers:
+  - url: http://localhost:5000/api
+    description: Local dev
+
+paths:
+  /products:
+    get:
+      summary: Get product list of Homepage
+      description: Returns a paginated list of products with minimal fields for the Homepage.
+      parameters:
+        - name: search
+          in: query
+          description: Keyword to search product name (optional)
+          schema: 
+            type: string
+            minLength: 1
+            maxLength: 100
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: pageSize 
+          in: query
+          schema: 
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: sort
+          in: query
+          schema: 
+            type: string 
+            enum: [relevance, price_asc, price_desc, newest] # FE only allows send one of 4 this values 
+            default: relevance
+      responses:
+        '200':
+          description: OK - product list
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+              examples:
+                sample:
+                  value:
+                    data:
+                      - id: "p_001"
+                        name: "dell type 1"
+                        price: 20000000 
+                        brand: "dell"
+                        thumbnail: "link_image1"
+                        stock: 10 # number computer in stock
+                      - id: "p_002"
+                        name: "asus type 1"
+                        price: 20000000 
+                        brand: "dell"
+                        thumbnail: "link_image2"
+                        stock: 10 # number computer in stock
+                      - id: "p_003"
+                        name: "dell type 2"
+                        price: 20000000 
+                        brand: "dell"
+                        thumbnail: "link_image1"
+                        stock: 10 # number computer in stock
+                      - id: "p_004"
+                        name: "asus type 2"
+                        price: 20000000 
+                        brand: "dell"
+                        thumbnail: "link_image2"
+                        stock: 10 # number computer in stock
+                    pagination:
+                      page: 1 
+                      pageSize: 20
+                      totalItems: 224
+                      totalPages: 12
+                    appliedFilters:
+                      search: "laptop"
+                      sort: "relevance" #after search laptop display show laptop list
+        '400':
+          description: Bad Request - invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRespone'
+  /products/{id}:
+    get:
+      summary: Get product detail by id
+      parameters:
+        - name: id    
+          in: path
+          required: true
+          description: Product ID 
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: OK -product detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+              examples:
+                sample:
+                  value:
+                    id: "p_001"
+                    name: "dell"
+                    price: 20000000        
+                    description: ""
+                    image:
+                      - "link1"
+                      - "link2"
+                    specs:
+                      cpu: "Intel Core i7-14700"
+                      ram: "32GB LPDDR4"
+                      storage: "512GB NVMe"
+                      display: "14\" 2.8K OLED"
+                      weight: "1.12KG"
+                    brand: "dell"
+                    categoryId: "cat_laptop"
+                    stock: 10
+                    rating: 4.7
+        '404':
+          description: Not Found - product does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorRespone'
+
+
+                    
+components:
+  schemas:
+
+    ProductCard:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        thumbnail:
+          type: string 
+          description: URL of thumbnail "link_image1"
+        stock: 
+          type: integer
+      required: [id, name, price, thumbnail, stock]
+    
+    ProductListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCard'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        appliedFilters:
+          type: object
+          additionalProperties: true
+      required: [data, pagination]
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer        
+          minimum: 1
+        pageSize:
+          type: integer
+          minimum: 1
+        totalItems:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+      required: [page, pageSize, totalItems, totalPages]
+    
+    ProductDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        specs: # specification of laptop
+          type: object
+          additionalProperties: true
+          description: Free-form spec key-values (cpu, ram, storage, ...)
+        brand:
+          type: string
+        categoryId:
+          type: string 
+        stock:
+          type: integer
+        rating:
+          type: number
+          format: float
+      required: [id, name, price, stock]
+
+    ErrorRespone:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string 
+              example: "BAD_REQUEST"
+            message:
+              type: string
+              example: "pageSize must be <= 100"
+            details:
+              type: object
+              additionalProperties: true
+      required: [error]
+
+          
+
+
+      
+
