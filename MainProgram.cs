@@ -9,10 +9,10 @@ using System.Text.Json;
 using System.Text.Unicode;
 using WebsiteComputer.Models;
 
+var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
-
-
-// JSON options
+// ✅ JSON options
 builder.Services.ConfigureHttpJsonOptions(o =>
 {
     o.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -20,11 +20,9 @@ builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 });
 
-var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
-
 // ✅ DB connection (local + render)
 var connStr = config.GetConnectionString("Supabase")
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__Supabase")
     ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
     ?? throw new InvalidOperationException("Missing Supabase connection string");
 
@@ -44,14 +42,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ✅ Swagger UI
+// ✅ Middleware order
+app.UseCors("AllowAll");   // đặt trước MapControllers
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseCors("AllowAll");
+app.UseAuthorization();
 app.MapControllers();
-//http://localhost:5000/swagger
 
 await app.RunAsync();
-
-
