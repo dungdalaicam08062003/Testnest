@@ -12,10 +12,6 @@ using WebsiteComputer.Models;
 
 
 
-var builder = WebApplication.CreateBuilder(args);
-
-var config = builder.Configuration;
-
 // JSON options
 builder.Services.ConfigureHttpJsonOptions(o =>
 {
@@ -24,9 +20,13 @@ builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 });
 
+var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
+
 // ✅ DB connection (local + render)
 var connStr = config.GetConnectionString("Supabase")
-    ?? throw new InvalidOperationException("Missing ConnectionStrings:Supabase");
+    ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
+    ?? throw new InvalidOperationException("Missing Supabase connection string");
 
 // ✅ CORS
 builder.Services.AddCors(options =>
