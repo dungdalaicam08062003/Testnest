@@ -8,7 +8,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using WebsiteComputer.Models;
-
+AppContext.SetSwitch("System.Net.DisableIPv6", true);
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
@@ -21,9 +21,7 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 });
 
 // ✅ DB connection (local + render)
-var connStr = config.GetConnectionString("Supabase")
-    ?? Environment.GetEnvironmentVariable("ConnectionStrings__Supabase")
-    ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
+var connStr = config.GetEnvironmentVariable("DATABASE_CONNECTION")
     ?? throw new InvalidOperationException("Missing Supabase connection string");
 
 // ✅ CORS
