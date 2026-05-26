@@ -21,7 +21,9 @@ builder.Services.ConfigureHttpJsonOptions(o =>
 });
 
 // ✅ DB connection (local + render)
-var connStr = config.GetEnvironmentVariable("DATABASE_CONNECTION")
+var connStr = config.GetConnectionString("Supabase")
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__Supabase")
+    ?? Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
     ?? throw new InvalidOperationException("Missing Supabase connection string");
 
 // ✅ CORS
