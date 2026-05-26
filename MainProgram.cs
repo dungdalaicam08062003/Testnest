@@ -12,7 +12,7 @@ using WebsiteComputer.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-// ✅ JSON options
+// JSON options
 builder.Services.ConfigureHttpJsonOptions(o =>
 {
     o.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -43,7 +43,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // ✅ Middleware order
-app.UseCors("AllowAll");   // đặt trước MapControllers
+app.UseCors("AllowAll");   // phải đặt trước MapControllers
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -51,3 +51,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 await app.RunAsync();
+
